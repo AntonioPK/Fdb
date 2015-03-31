@@ -1,10 +1,11 @@
 #!/usr/bin/perl -w
-#! D:\strawberry\perl\bin\perl -w
+#!D:\strawberry\perl\bin\perl.exe -w
 #
-# Factordb composite evaluator version 1.5.0 - 29 March 2015
+# Factordb composite evaluator version 1.5.1 - 31 March 2015
 # Based on original Perl script by yoyo - http://www.rechenkraft.net/wiki/Benutzer_Diskussion:Yoyo/factordb
 # Modified and extended by Antonio - http://mersenneforum.org/
 # Written using Strawberry Perl 5.20.2.1-64bit
+# Linux compatability and formatting by ChristianB - http://mersenneforum.org/
 
 use warnings;
 use strict;
@@ -17,7 +18,13 @@ my $mindig=70;   # Default minimum size of composite to request, smaller composi
 my $maxdig=96;   # Default maximum size of composite to factor (my SIQS/GNFS crossover)
 my $range=100;   # Default maximum random offset into composite data list, used to reduce collisions between multiple users
 my $yafutext=1;  # Default to displaying YAFU progress messages
+
 my $yafupath="./"; # Default yafu path on linux
+if ($^O ne "linux") {$yafupath="";} # yafu path on Windows
+#------------------------------------------------------------------------------------------
+# For Windows:- can be set if not in the same directory as yafu e.g. $yafupath="F:\\yafu\\"
+# Note:- must use '\\' to get'\' in Perl text string.
+#------------------------------------------------------------------------------------------
 
 my $fdburl="http://factorization.ath.cx"; # URL to get composites from
 my $fdbcookie=""; # Cookie to use with the URL above
@@ -119,7 +126,7 @@ do {
 		(my $sec,my $min,my $hour,my $mday,my $mon,my $year,my $wday,my $yday,my $isdst) = localtime();
 		my $contents = get("$fdburl/listtype.php?t=3&mindig=$mindig&perpage=$numtoget{'current'}&start=$rand&download=1");
 		++$waitrequests;
-		if (!defined $contents or $contents =~ /[a-z]/ ) {
+		if (!defined $contents or $contents =~ /[a-z]/) {
 			printf("%02d:%02d:%02d", $hour, $min, $sec);
 			print "> No composite(s) received, waiting...($waitrequests)\n";
 			$idle=1;
@@ -131,7 +138,7 @@ do {
 					$compositelen = length($composite);
 				}
 			}
-			if ($compositelen > $maxdig ){
+			if ($compositelen > $maxdig) {
 			# pause while composites are larger than maximum allowed
 				printf("%02d:%02d:%02d", $hour, $min, $sec);
 				print "> Max composite size exceeded, waiting...($waitrequests)\n";
@@ -158,7 +165,7 @@ do {
 	}
 
 	# Sort into ascending size - if more than one composite is requested
-	if ($numtoget{'current'} > 1 ) {@composites = sort{$a<=>$b}@composites;}
+	if ($numtoget{'current'} > 1) {@composites = sort{$a<=>$b}@composites;}
 
 	foreach my $composite (@composites) {
 		my $localt = time();
@@ -175,7 +182,7 @@ do {
 			if ($yafutext) {print "$_";}
 			chomp;
 			if (/^[CP].*? = (\d+)/) {
-				push( @results, $1 );
+				push(@results, $1);
 				if (!$yafutext) {print "$_\n";}
 			}
 		}
@@ -183,7 +190,7 @@ do {
 		close(YAFU);
 		unlink("siqs.dat"); # I have seen this file re-used when factoring, so delete it here to redo entire factorization!
 
-		if ( scalar(@results) > 0 ) {
+		if (scalar(@results) > 0) {
 		# Sort factors into descending size order for reporting to database
 			@results = sort{$b<=>$a}@results;
 			++$total{'composites'};
@@ -289,7 +296,7 @@ do {
 			if ($delay > 0) {sleep($delay);}
 			if ($shorterm < 1300) {$numtoget{'current'} = $numtoget{'normal'};}
 
-		}elsif ($shorterm > 1400){
+		}elsif ($shorterm > 1400) {
 			$numtoget{'current'} = $numtoget{'throttle'};
 		}
 	}
