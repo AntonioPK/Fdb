@@ -1,0 +1,29 @@
+Version 1.5.2
+• Corrected bug in 'no composites received' code, total count was not being incremented.
+• Corrected a display bug when Factordb failed to respond to a composite request.
+•
+• All constants dependant on the maximum page rate allowed by Factordb.com replaced with variables.
+• The value of these variables are calculated from the new variable holding the maximum page rate.
+• This is additional support for changes introduced in version 1.5.1
+•
+• Modified 10 minute wait loops so that the user has to wait at most 1 minute before Ctrl-Q exits the code.
+• Added log file option (-l): - Can now log data to Fdb.csv, a comma separated list consisting
+  of composite size, number of prime factors found, time to factor (in seconds).
+• Added auto increment for random offset (-a xx): - This is in addition to the maximum set by the -r option,
+  each time a worker collision occurs the additional random offset will be incremented by xx,
+  it also invokes an automatic decrement of the additional random offset each time a collision does not occur.
+  Suggested starting values: -r 10 -a 3
+• 'Get composite' display has been modified to show the current maximum random offset (offset/maximum offset).
+• Display of the count for each error type is supressed until the count for that error is > 0.
+•
+Version 1.5.1
+• added unix shebang
+• added $yafupath config variable
+• added $fdburl and $fdbcookie config variable to support cookie based authentication in the future
+• changed mixed tab/space indentation to tab indentation and some other small white space changes
+•
+Version 1.5.0
+• Initial GitHub submit
+• Requires: -
+  Perl version 5.18 or later
+  YAFU version 1.33 or later, available at: http://sourceforge.net/projects/yafu/files/
